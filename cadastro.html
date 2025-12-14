@@ -92,7 +92,7 @@
           return false;
         }
 
-        // Salvar os dados adicionais do usuário na tabela "profiles"
+        // Salvar os dados adicionais do usuário na tabela "profiles" sem a senha
         const { data, error } = await supabase.from('profiles').insert([
           {
             id: user.id, // ID do usuário autenticado
@@ -143,5 +143,6 @@
       }
     });
   </script>
+
 </body>
-  </html>
+</html>
