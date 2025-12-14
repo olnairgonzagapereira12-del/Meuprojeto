@@ -19,4 +19,4 @@ Este é um projeto simples de **login** utilizando **HTML**, **CSS** e **JavaScr
 
 1. Inicia este repositório:
    ```bash
-   git clone https://github.com/seu-usuario/Meuprojeto.git primeiro pela página cadastro.html
+   git clone https://github.com/seu-usuario/Meuprojeto.git primeiro pela página cadastro.html depois login.html depois lista-usuarios.html. 
