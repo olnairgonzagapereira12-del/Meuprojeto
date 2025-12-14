@@ -1,6 +1,4 @@
 # Meuprojeto
-Meuprojeto 
-# Meuprojeto
 
 Este é um projeto simples de **login** utilizando **HTML**, **CSS** e **JavaScript**, com integração com o **Supabase** para autenticação de usuários. O projeto permite a realização de login com e-mail e senha, cadastro de novos usuários, e visualização de uma lista de usuários após a autenticação.
 
