@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro Neon</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { height: 100vh; display: flex; justify-content: center; align-items: center; background: #040014; overflow: hidden; }
+    .glow { position: absolute; width: 450px; height: 450px; background: linear-gradient(45deg, #00eaff, #ff00f7); filter: blur(130px); animation: move 6s infinite alternate; }
+    @keyframes move { from { transform: translate(-200px, -100px); } to { transform: translate(200px, 100px); } }
+    .cadastro-box { position: relative; width: 380px; padding: 40px; border-radius: 15px; backdrop-filter: blur(14px); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 0 20px rgba(0, 255, 255, 0.4); }
+    .cadastro-box h2 { color: #00eaff; text-align: center; margin-bottom: 25px; text-shadow: 0 0 10px #00eaff; }
+    .input-box { position: relative; margin: 20px 0; }
+    .input-box input { width: 100%; padding: 12px 45px 12px 12px; background: transparent; border: 1px solid #00eaff; border-radius: 10px; color: #fff; font-size: 15px; outline: none; box-shadow: 0 0 8px #00eaff; transition: .4s; }
+    .input-box input:focus { box-shadow: 0 0 15px #00eaff; }
+    .input-box label { position: absolute; top: 50%; left: 12px; transform: translateY(-50%); color: #7deaff; pointer-events: none; transition: 0.3s; }
+    .input-box input:focus + label, .input-box input:not(:placeholder-shown) + label { top: -10px; font-size: 12px; color: #00eaff; }
+    .cadastro-box button { width: 100%; padding: 12px; margin-top: 10px; font-size: 16px; color: #001; background: #00eaff; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; box-shadow: 0 0 10px #00eaff; transition: .3s; }
+    .cadastro-box button:hover { box-shadow: 0 0 18px #00eaff; background: #0ef; }
+    .links { text-align: center; margin-top: 15px; }
+    .links a { color: #00eaff; text-decoration: none; font-size: 14px; }
+    .links a:hover { text-shadow: 0 0 10px #00eaff; }
+    .confirmation-msg { text-align: center; color: #00eaff; margin-top: 20px; }
+    .login-btn { display: none; text-align: center; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <div class="glow"></div>
+
+  <div class="cadastro-box">
+    <h2>Cadastrar Usuário</h2>
+
+    <form id="cadastro-form">
+      <div class="input-box">
+        <input type="text" id="nome" required placeholder=" ">
+        <label>Nome</label>
+      </div>
+
+      <div class="input-box">
+        <input type="email" id="email" required placeholder=" ">
+        <label>E-mail</label>
+      </div>
+
+      <div class="input-box">
+        <input type="password" id="senha" required placeholder=" ">
+        <label>Senha</label>
+      </div>
+
+      <div class="input-box">
+        <input type="text" id="telefone" required placeholder=" ">
+        <label>Telefone</label>
+      </div>
+
+      <div class="input-box">
+        <input type="text" id="cidade" required placeholder=" ">
+        <label>Cidade</label>
+      </div>
+
+      <button type="submit">Cadastrar</button>
+    </form>
+
+    <div class="confirmation-msg" id="confirmation-msg"></div>
+
+    <div class="login-btn" id="login-btn">
+      <button onclick="window.location.href='login.html'">Entrar</button>
+    </div>
+
+    <div class="links">
+      <a href="login.html">Voltar ao Login</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0-beta.2/dist/supabase.min.js"></script>
+  <script>
+    const supabaseUrl = 'https://pesissnnhriatytmpcqq.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlc2lzc25uaHJpYXR5dG1wY3FxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2NjYzMzEsImV4cCI6MjA4MTI0MjMzMX0.79lZu9M3RvXw67gx-haoY8guJ2DckDf2mp59dgswTJU';  // Substitua pela sua chave secreta
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Função para registrar um novo usuário
+    async function salvarCadastro(nome, email, senha, telefone, cidade) {
+      try {
+        // Criar o usuário no Supabase
+        const { user, error: authError } = await supabase.auth.signUp({
+          email,
+          password: senha
+        });
+
+        if (authError) {
+          alert('Erro ao criar conta: ' + authError.message);
+          return false;
+        }
+
+        // Salvar os dados adicionais do usuário na tabela "profiles"
+        const { data, error } = await supabase.from('profiles').insert([
+          {
+            id: user.id, // ID do usuário autenticado
+            full_name: nome,
+            email: email,
+            telefone: telefone,
+            cidade: cidade,
+            created_at: new Date()
+          }
+        ]);
+
+        if (error) {
+          alert('Erro ao salvar o cadastro: ' + error.message);
+          console.error(error);
+          return false;
+        }
+
+        // Exibir mensagem para confirmar o e-mail
+        document.getElementById('confirmation-msg').innerText = 'Verifique seu e-mail para confirmar sua conta.';
+
+        // Exibir o botão de "Entrar" após 2 segundos
+        setTimeout(() => {
+          document.getElementById('login-btn').style.display = 'block';
+        }, 2000);
+
+        return true;
+      } catch (error) {
+        console.error(error);
+        alert('Ocorreu um erro ao tentar cadastrar o usuário.');
+        return false;
+      }
+    }
+
+    // Lógica para captura e envio dos dados do formulário
+    document.getElementById('cadastro-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const nome = document.getElementById('nome').value;
+      const email = document.getElementById('email').value;
+      const senha = document.getElementById('senha').value;
+      const telefone = document.getElementById('telefone').value;
+      const cidade = document.getElementById('cidade').value;
+
+      const sucesso = await salvarCadastro(nome, email, senha, telefone, cidade);
+      if (sucesso) {
+        // Limpar o formulário após sucesso
+        document.getElementById('cadastro-form').reset();
+      }
+    });
+  </script>
+</body>
+  </html>
