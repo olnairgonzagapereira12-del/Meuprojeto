@@ -34,8 +34,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0-beta.2/dist/supabase.min.js"></script>
   <script>
-    const supabaseUrl = 'https://pesissnnhriatytmpcqq.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlc2lzc25uaHJpYXR5dG1wY3FxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2NjYzMzEsImV4cCI6MjA4MTI0MjMzMX0.79lZu9M3RvXw67gx-haoY8guJ2DckDf2mp59dgswTJU'; // Substitua pela sua chave secreta
+    // Carregar variáveis de ambiente
+    const supabaseUrl = process.env.SUPABASE_URL; // Variável de ambiente
+    const supabaseKey = process.env.SUPABASE_KEY; // Variável de ambiente
+
     const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
     // Função para buscar todos os usuários cadastrados
